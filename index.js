@@ -1,3 +1,3 @@
-const sockets = require('./servers.js')
+const sockets = require('./server.js')
 sockets.startTrackingServer({})
 sockets.startPotentialServer({})
