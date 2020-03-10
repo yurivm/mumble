@@ -45,8 +45,8 @@ exports.startTrackingServer = () => {
         }
 
         try {
-          console.log('TRACKING: RECEIVED DATA');
-          console.log(str);
+          // console.log('TRACKING: RECEIVED DATA');
+          // console.log(str);
           // this is where you can buffer the data for potential clients
         } catch (err) {
           console.log('Window was closed');
@@ -115,8 +115,8 @@ exports.startPotentialServer = () => {
               str = `${str}}`;
             }
           }
-          console.log('POTENTIAL: RECEIVED DATA');
-          console.log(str);
+          // console.log('POTENTIAL: RECEIVED DATA');
+          // console.log(str);
           // this is where you can send the str somewhere
           // .mainWindow.webContents.send('newPotential',str);
         } catch (err) {
