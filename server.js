@@ -1,164 +1,148 @@
 // Load modules
 // this code is from odasweb project, https://github.com/introlab/odas_web
 // intend to update it a bit later on
-const StringDecoder = require('string_decoder').StringDecoder;
-var net = require('net');
+const { StringDecoder } = require('string_decoder');
+const net = require('net');
 
-let trackingServer
-let potentialServer
+let trackingServer;
+let potentialServer;
 
 /*
  * Create TCP server for source tracking
  */
 
- let remainingTrack = '';
+let remainingTrack = '';
 
- exports.startTrackingServer = (odasStudio) => {
+exports.startTrackingServer = () => {
+  function handleConnection(conn) {
+    const remoteAddress = `${conn.remoteAddress}:${conn.remotePort}`;
+    console.log('new client connection from %s', remoteAddress);
 
-   trackingServer = net.createServer();
-   trackingServer.on('connection', handleConnection);
+    function onConnData(d) {
+      const decoder = new StringDecoder();
 
-   trackingServer.listen(9000, function() {
-     console.log('server listening to %j', trackingServer.address());
-   });
+      // Decode received string
+      const stream = remainingTrack + decoder.write(d);
+      const strs = stream.split('}\n{');
+      if (strs.length < 2) {
+        remainingTrack = stream;
+        return;
+      }
+      strs.forEach((str, index) => {
+        if (index === strs.length - 1) {
+          remainingTrack = str;
+          return;
+        }
 
-   function handleConnection(conn) {
-     var remoteAddress = conn.remoteAddress + ':' + conn.remotePort;
-     console.log('new client connection from %s', remoteAddress);
+        if (str.charAt(0) !== '{') {
+          str = `{${str}`;
+        }
 
-     conn.on('data', onConnData);
-     conn.once('close', onConnClose);
-     conn.on('error', onConnError);
+        if (str.charAt(str.length - 2) !== '}') {
+          if (str.charAt(str.length - 3) !== '}') {
+            str = `${str}}`;
+          }
+        }
 
-     function onConnData(d) {
+        try {
+          console.log('TRACKING: RECEIVED DATA');
+          console.log(str);
+          // this is where you can buffer the data for potential clients
+        } catch (err) {
+          console.log('Window was closed');
+        }
+      });
+    }
 
-       var decoder = new StringDecoder();
+    function onConnClose() {
+      console.log('connection from %s closed', remoteAddress);
+      // .mainWindow.webContents.send('remote-offline');
+    }
 
-       // Decode received string
-       var stream = remainingTrack + decoder.write(d);
-       strs = stream.split("}\n{");
-       if(strs.length < 2) {
-           remainingTrack = stream;
-           return;
-       }
-       strs.forEach((str,index) => {
+    function onConnError(err) {
+      console.log('Connection %s error: %s', remoteAddress, err.message);
+    }
 
-           if(index == strs.length-1) {
-               remainingTrack = str;
-               return;
-           }
+    conn.on('data', onConnData);
+    conn.once('close', onConnClose);
+    conn.on('error', onConnError);
+  }
 
-           if(str.charAt(0) !== '{') {
-               str = '{' + str;
-           }
+  trackingServer = net.createServer();
+  trackingServer.on('connection', handleConnection);
 
-           if(str.charAt(str.length-2) !== '}') {
-               if(str.charAt(str.length-3)!== '}') {
-                   str = str + '}';
-               }
-           }
-
-           try {
-            console.log('TRACKING: RECEIVED DATA');
-            console.log(str);
-            // console.log(str);
-            // this is where you can buffer the data for potential clients
-             // odasStudio.mainWindow.webContents.send('newTracking',str);
-           }
-
-           catch(err) {
-             console.log('Window was closed');
-           }
-       });
-     }
-
-     function onConnClose() {
-       console.log('connection from %s closed', remoteAddress);
-       // odasStudio.mainWindow.webContents.send('remote-offline');
-     }
-
-     function onConnError(err) {
-       console.log('Connection %s error: %s', remoteAddress, err.message);
-     }
-   }
-
- }
+  trackingServer.listen(9000, () => {
+    console.log('server listening to %j', trackingServer.address());
+  });
+};
 
 
 /*
  * Create TCP server for potential sources
  */
 
- let remainingPot = '';
+let remainingPot = '';
 
- exports.startPotentialServer = (odasStudio) => {
+exports.startPotentialServer = () => {
+  function handlePotConnection(conn) {
+    const remoteAddress = `${conn.remoteAddress}:${conn.remotePort}`;
+    console.log('new client connection from %s', remoteAddress);
 
-   potentialServer = net.createServer();
-   potentialServer.on('connection', handlePotConnection);
+    function onConnData(d) {
+      const decoder = new StringDecoder();
 
-   potentialServer.listen(9001, function() {
-     console.log('server listening to %j', potentialServer.address());
-   });
+      // Decode received string
+      const stream = remainingPot + decoder.write(d);
+      const strs = stream.split('}\n{');
+      if (strs.length < 2) {
+        remainingPot = stream;
+        return;
+      }
 
-   function handlePotConnection(conn) {
-     var remoteAddress = conn.remoteAddress + ':' + conn.remotePort;
-     console.log('new client connection from %s', remoteAddress);
+      strs.forEach((str, index) => {
+        if (index === strs.length - 1) {
+          remainingPot = str;
+          return;
+        }
 
-     conn.on('data', onConnData);
-     conn.once('close', onConnClose);
-     conn.on('error', onConnError);
+        try {
+          if (str.charAt(0) !== '{') {
+            str = `{${str}`;
+          }
 
-     function onConnData(d) {
-
-       var decoder = new StringDecoder();
-
-       // Decode received string
-       var stream = remainingPot + decoder.write(d);
-       strs = stream.split("}\n{");
-       if(strs.length < 2) {
-           remainingPot = stream;
-           return;
-       }
-
-       strs.forEach((str,index) => {
-
-           if(index == strs.length-1) {
-               remainingPot = str;
-               return;
-           }
-
-           try {
-
-               if(str.charAt(0) !== '{') {
-                   str = '{' + str;
-               }
-
-               if(str.charAt(str.length-2) !== '}') {
-                   if(str.charAt(str.length-3)!== '}') {
-                       str = str + '}';
-                   }
-               }
-             console.log('POTENTIAL: RECEIVED DATA');
-             console.log(str);
-             //this is where you can send the str somewhere
-             // odasStudio.mainWindow.webContents.send('newPotential',str);
+          if (str.charAt(str.length - 2) !== '}') {
+            if (str.charAt(str.length - 3) !== '}') {
+              str = `${str}}`;
             }
+          }
+          console.log('POTENTIAL: RECEIVED DATA');
+          console.log(str);
+          // this is where you can send the str somewhere
+          // .mainWindow.webContents.send('newPotential',str);
+        } catch (err) {
+          console.log('Window was closed');
+        }
+      });
+    }
 
-           catch(err) {
-             console.log('Window was closed');
-           }
-       });
+    function onConnClose() {
+      console.log('connection from %s closed', remoteAddress);
+      // .mainWindow.webContents.send('remote-offline');
+    }
 
-     }
+    function onConnError(err) {
+      console.log('Connection %s error: %s', remoteAddress, err.message);
+    }
 
-     function onConnClose() {
-       console.log('connection from %s closed', remoteAddress);
-       // odasStudio.mainWindow.webContents.send('remote-offline');
-     }
+    conn.on('data', onConnData);
+    conn.once('close', onConnClose);
+    conn.on('error', onConnError);
+  }
 
-     function onConnError(err) {
-       console.log('Connection %s error: %s', remoteAddress, err.message);
-     }
-   }
- }
+  potentialServer = net.createServer();
+  potentialServer.on('connection', handlePotConnection);
 
+  potentialServer.listen(9001, () => {
+    console.log('server listening to %j', potentialServer.address());
+  });
+};
