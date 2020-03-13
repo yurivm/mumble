@@ -20,7 +20,7 @@ module.exports = {
     production : {
       user : 'pi',
       host : ['noise-pi'],
-      ref  : 'origin/master',
+      ref  : 'origin/development',
       repo : 'git@github.com:yurivm/mumble.git',
       path : '/home/pi/mumble',
       'post-deploy' : 'npm install && pm2 reload ecosystem.config.js --env production'

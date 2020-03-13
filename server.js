@@ -6,14 +6,13 @@ const net = require('net');
 
 let trackingServer;
 let potentialServer;
-
 /*
  * Create TCP server for source tracking
  */
 
 let remainingTrack = '';
 
-exports.startTrackingServer = () => {
+exports.startTrackingServer = (clients) => {
   function handleConnection(conn) {
     const remoteAddress = `${conn.remoteAddress}:${conn.remotePort}`;
     console.log('new client connection from %s', remoteAddress);
@@ -47,6 +46,10 @@ exports.startTrackingServer = () => {
         try {
           // console.log('TRACKING: RECEIVED DATA');
           // console.log(str);
+          // clients.push(str);
+          clients.forEach(function(client) {
+            client.send(str);
+          });
           // this is where you can buffer the data for potential clients
         } catch (err) {
           console.log('Window was closed');
@@ -83,7 +86,7 @@ exports.startTrackingServer = () => {
 
 let remainingPot = '';
 
-exports.startPotentialServer = () => {
+exports.startPotentialServer = (clients) => {
   function handlePotConnection(conn) {
     const remoteAddress = `${conn.remoteAddress}:${conn.remotePort}`;
     console.log('new client connection from %s', remoteAddress);
@@ -118,6 +121,9 @@ exports.startPotentialServer = () => {
           // console.log('POTENTIAL: RECEIVED DATA');
           // console.log(str);
           // this is where you can send the str somewhere
+          clients.forEach(function(client) {
+            client.send(str);
+          });
           // .mainWindow.webContents.send('newPotential',str);
         } catch (err) {
           console.log('Window was closed');
