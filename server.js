@@ -118,10 +118,11 @@ exports.startPotentialServer = (clients) => {
               str = `${str}}`;
             }
           }
-          // console.log('POTENTIAL: RECEIVED DATA');
+          console.log('POTENTIAL: RECEIVED DATA');
           // console.log(str);
           // this is where you can send the str somewhere
           clients.forEach(function(client) {
+            console.log('POTENTIAL: SENDING DATA');
             client.send(str);
           });
           // .mainWindow.webContents.send('newPotential',str);

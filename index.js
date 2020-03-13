@@ -29,5 +29,5 @@ server.listen(webSocketsServerPort, function() {
 });
 
 const sockets = require('./server.js')
-// sockets.startTrackingServer(clients);
+sockets.startTrackingServer(clients);
 sockets.startPotentialServer(clients);
