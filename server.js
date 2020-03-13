@@ -45,12 +45,9 @@ exports.startTrackingServer = (clients) => {
 
         try {
           // console.log('TRACKING: RECEIVED DATA');
-          // console.log(str);
-          // clients.push(str);
-          clients.forEach(function(client) {
-            client.send(str);
-          });
-          // this is where you can buffer the data for potential clients
+          // clients.forEach(function(client) {
+          //   client.send(str);
+          // });
         } catch (err) {
           console.log('Window was closed');
         }
@@ -118,11 +115,8 @@ exports.startPotentialServer = (clients) => {
               str = `${str}}`;
             }
           }
-          console.log('POTENTIAL: RECEIVED DATA');
-          // console.log(str);
           // this is where you can send the str somewhere
           clients.forEach(function(client) {
-            console.log('POTENTIAL: SENDING DATA');
             client.send(str);
           });
           // .mainWindow.webContents.send('newPotential',str);
