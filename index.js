@@ -2,6 +2,9 @@ const fs = require('fs');
 const http = require('http');
 const WebSocket = require('ws');
 
+const { mumbleConfig } = require("./config/mumble.js");
+const servers = require('./src/tcp_server.js')
+
 const server = http.createServer();
 const wss = new WebSocket.Server({ server });
 const webSocketsServerPort = 8080;
@@ -24,12 +27,11 @@ wss.on('connection', function connection(ws, req) {
     });
 });
 
-server.listen(webSocketsServerPort, function() {
-  console.log("HTTP Server is listening on port " + webSocketsServerPort);
+server.listen(mumbleConfig.webSockets.port, function() {
+  console.log("HTTP Server is listening on port " + mumbleConfig.webSockets.port);
 });
 
-const sockets = require('./server.js')
 // tracking, but we don't want to send any messages yet
-sockets.startTCPServer(9000, []);
+servers.startTCPServer(mumbleConfig.tracking.port, []);
 // potential
-sockets.startTCPServer(9001, clients);
+servers.startTCPServer(mumbleConfig.potential.port, clients);
