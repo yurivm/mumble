@@ -7,7 +7,7 @@ const net = require('net');
  * Create TCP server that receives data and sends it to clients in a loop
  */
 
-const boundary = "}\n{";
+const boundary = /}\n{/g;
 const boundaryMarker = "}####{";
 const marker = "####";
 const splitJson = (stream) => {
