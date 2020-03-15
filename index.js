@@ -29,7 +29,7 @@ server.listen(webSocketsServerPort, function() {
 });
 
 const sockets = require('./server.js')
-// tracking
-sockets.startTCPServer(9000, clients);
+// tracking, but we don't want to send any messages yet
+sockets.startTCPServer(9000, []);
 // potential
 sockets.startTCPServer(9001, clients);
