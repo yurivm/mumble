@@ -8,7 +8,7 @@ const net = require('net');
 
 const marker = "}\n{";
 const replaceMarker = "}\n####{";
-const splitMarker = "####";
+const splitMarker = "\n####";
 const splitStream = (stream) =>  {
   return stream.replace(marker, replaceMarker).split(splitMarker)
 };
