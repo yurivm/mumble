@@ -5,13 +5,17 @@
 const { StringDecoder } = require('string_decoder');
 const net = require('net');
 
-// let trackingServer;
-// let potentialServer;
+
+const marker = "}\n{";
+const replaceMarker = "}\n####{";
+const splitMarker = "####";
+const splitStream = (stream) =>  {
+  return stream.replace(marker, replaceMarker).split(splitMarker)
+};
 
 /*
- * Create TCP server for potential sources
+ * Create TCP server that receives data and sends it to clients in a loop
  */
-
 exports.startTCPServer = (port, clients) => {
   let server;
   function handlePotConnection(conn) {
@@ -25,8 +29,10 @@ exports.startTCPServer = (port, clients) => {
       const stream = decoder.write(d);
       try {
         // this is where you can send the stream somewhere
-        clients.forEach(function(client) {
-          client.send(stream);
+        splitStream(stream).forEach((str, index) => {
+          clients.forEach(function(client) {
+            client.send(stream);
+          });
         });
       } catch (err) {
         console.log('Error sending data: %s', err);
