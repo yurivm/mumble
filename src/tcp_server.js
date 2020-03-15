@@ -1,11 +1,19 @@
 // I have taken this code is from odasweb project, https://github.com/introlab/odas_web
-// but instead of buffering and attempting to split it I send data straight away as it is received
+//
 const { StringDecoder } = require('string_decoder');
 const net = require('net');
 
 /*
  * Create TCP server that receives data and sends it to clients in a loop
  */
+
+const boundary = "}\n{";
+const boundaryMarker = "}####{";
+const marker = "####";
+const splitJson = (stream) => {
+  return stream.replace(boundary, boundaryMarker).split(marker);
+};
+
 exports.startTCPServer = (port, clients) => {
   function handlePotConnection(conn) {
     const remoteAddress = `${conn.remoteAddress}:${conn.remotePort}`;
@@ -16,10 +24,11 @@ exports.startTCPServer = (port, clients) => {
 
       // Decode received string
       const stream = decoder.write(d);
-
       try {
-        clients.forEach(function(client) {
-          client.send(stream);
+        splitJson(stream).forEach(function (str) {
+          clients.forEach(function(client) {
+            client.send(str);
+          });
         });
       } catch (err) {
         console.log('Error sending data: %s', err);
