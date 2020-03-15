@@ -92,38 +92,47 @@ exports.startPotentialServer = (clients) => {
       const decoder = new StringDecoder();
 
       // Decode received string
-      const stream = remainingPot + decoder.write(d);
-      const strs = stream.split('}\n{');
-      if (strs.length < 2) {
-        remainingPot = stream;
-        return;
+      const stream = decoder.write(d);
+      // const stream = remainingPot + decoder.write(d);
+      // const strs = stream.split('}\n{');
+      // if (strs.length < 2) {
+      //   remainingPot = stream;
+      //   return;
+      // }
+      try {
+        // this is where you can send the str somewhere
+        clients.forEach(function(client) {
+          client.send(stream);
+        });
+      } catch (err) {
+        console.log('Error sending data: %s', err);
       }
 
-      strs.forEach((str, index) => {
-        if (index === strs.length - 1) {
-          remainingPot = str;
-          return;
-        }
+      // strs.forEach((str, index) => {
+      //   if (index === strs.length - 1) {
+      //     remainingPot = str;
+      //     return;
+      //   }
 
-        try {
-          if (str.charAt(0) !== '{') {
-            str = `{${str}`;
-          }
+      //   try {
+      //     if (str.charAt(0) !== '{') {
+      //       str = `{${str}`;
+      //     }
 
-          if (str.charAt(str.length - 2) !== '}') {
-            if (str.charAt(str.length - 3) !== '}') {
-              str = `${str}}`;
-            }
-          }
-          // this is where you can send the str somewhere
-          clients.forEach(function(client) {
-            client.send(str);
-          });
-          // .mainWindow.webContents.send('newPotential',str);
-        } catch (err) {
-          console.log('Window was closed');
-        }
-      });
+      //     if (str.charAt(str.length - 2) !== '}') {
+      //       if (str.charAt(str.length - 3) !== '}') {
+      //         str = `${str}}`;
+      //       }
+      //     }
+      //     // this is where you can send the str somewhere
+      //     clients.forEach(function(client) {
+      //       client.send(str);
+      //     });
+      //     // .mainWindow.webContents.send('newPotential',str);
+      //   } catch (err) {
+      //     console.log('Window was closed');
+      //   }
+      // });
     }
 
     function onConnClose() {
