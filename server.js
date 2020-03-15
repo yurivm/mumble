@@ -5,14 +5,6 @@
 const { StringDecoder } = require('string_decoder');
 const net = require('net');
 
-
-const marker = "}\n{";
-const replaceMarker = "}\n####{";
-const splitMarker = "\n####";
-const splitStream = (stream) =>  {
-  return stream.replace(marker, replaceMarker).split(splitMarker)
-};
-
 /*
  * Create TCP server that receives data and sends it to clients in a loop
  */
@@ -29,10 +21,8 @@ exports.startTCPServer = (port, clients) => {
       const stream = decoder.write(d);
       try {
         // this is where you can send the stream somewhere
-        splitStream(stream).forEach((str, index) => {
-          clients.forEach(function(client) {
-            client.send(stream);
-          });
+        clients.forEach(function(client) {
+          client.send(stream);
         });
       } catch (err) {
         console.log('Error sending data: %s', err);
