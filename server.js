@@ -9,6 +9,8 @@ const net = require('net');
  * Create TCP server that receives data and sends it to clients in a loop
  */
 
+let servers = [];
+
 exports.startTCPServer = (port, clients) => {
   function handlePotConnection(conn) {
     const remoteAddress = `${conn.remoteAddress}:${conn.remotePort}`;
@@ -44,6 +46,7 @@ exports.startTCPServer = (port, clients) => {
 
   const server = net.createServer();
   server.on('connection', handlePotConnection);
+  servers.push(server);
 
   server.listen(port, () => {
     console.log('server listening to %j', server.address());
