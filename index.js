@@ -29,5 +29,7 @@ server.listen(webSocketsServerPort, function() {
 });
 
 const sockets = require('./server.js')
+// tracking
 sockets.startTCPServer(9000, clients);
+// potential
 sockets.startTCPServer(9001, clients);
