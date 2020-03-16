@@ -9,7 +9,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "nodemon src/mumble.js",
-    "start": "node src/mumble.js"
+    "start": "node src/mumble.js",
+    "test": "mocha"
   },
   "author": "Yuri Veremeyenko",
   "license": "ISC",
@@ -17,6 +18,7 @@
     "eslint": "^6.8.0",
     "eslint-config-airbnb-base": "^14.0.0",
     "eslint-plugin-import": "^2.20.1",
+    "mocha": "^7.1.0",
     "nodemon": "^2.0.2"
   },
   "dependencies": {
