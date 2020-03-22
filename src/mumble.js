@@ -10,6 +10,14 @@ const wss = require("./web_sockets_server.js");
 wss.startWebSocketServer(mumbleConfig.webSockets.port);
 
 // tracking, but we don't want to send any messages yet
-tcp.startTCPServer(mumbleConfig.tracking.port, []);
+tracking = tcp.createTCPServer(mumbleConfig.tracking.port, []);
+
+tracking.listen(mumbleConfig.tracking.port, () => {
+  console.log('server listening to %j', tracking.address());
+});
+
 // potential
-tcp.startTCPServer(mumbleConfig.potential.port, wss.webSocketClients);
+potential = tcp.createTCPServer(mumbleConfig.potential.port, wss.webSocketClients);
+potential.listen(mumbleConfig.potential.port, () => {
+  console.log('server listening to %j', potential.address());
+});
