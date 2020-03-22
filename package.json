@@ -9,7 +9,8 @@
   "scripts": {
     "test": "mocha",
     "dev": "nodemon src/mumble.js",
-    "start": "node src/mumble.js"
+    "start": "node src/mumble.js",
+    "lint": "./node_modules/.bin/eslint src/"
   },
   "author": "Yuri Veremeyenko",
   "repository": {

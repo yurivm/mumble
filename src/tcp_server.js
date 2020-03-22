@@ -6,8 +6,8 @@ const net = require('net');
  */
 
 const boundary = /}\n{/g;
-const boundaryMarker = "}####{";
-const marker = "####";
+const boundaryMarker = '}####{';
+const marker = '####';
 const splitJson = (stream) => {
   return stream.replace(boundary, boundaryMarker).split(marker);
 };
@@ -24,7 +24,7 @@ exports.createTCPServer = (port, clients) => {
       const stream = decoder.write(d);
       try {
         splitJson(stream).forEach(function (str) {
-          clients.forEach(function(client) {
+          clients.forEach(function (client) {
             client.send(str);
           });
         });
@@ -50,4 +50,4 @@ exports.createTCPServer = (port, clients) => {
   server.on('connection', handleConnection);
 
   return server;
-}
+};
