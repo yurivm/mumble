@@ -12,10 +12,10 @@ let testWSClient = {
 
 let testTCPClient = {
   socket: new net.Socket(),
-  send: function() {
+  send: function(message = "{'msg':'hello world!'}\n{'msg':'hello world 2!'}") {
     let that = this;
     this.socket.connect(mumbleConfig.potential.port, '127.0.0.1', function() {
-      this.write("{'msg':'hello world!'}");
+      this.write(message);
       this.end();
       }
   );
@@ -33,8 +33,9 @@ describe('tcp_server', function() {
 
         setTimeout(() => {
           server.close();
-          expect(testWSClient.messages).to.have.lengthOf(1);
+          expect(testWSClient.messages).to.have.lengthOf(2);
           expect(testWSClient.messages[0]).to.equal("{'msg':'hello world!'}");
+          expect(testWSClient.messages[1]).to.equal("{'msg':'hello world 2!'}");
         }, 1000);
       });
       done();
