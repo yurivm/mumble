@@ -1,7 +1,7 @@
 module.exports = {
   apps : [{
     name: 'mumble',
-    script: 'index.js',
+    script: 'src/mumble.js',
     // Options reference: https://pm2.keymetrics.io/docs/usage/application-declaration/
     args: '',
     instances: 1,
@@ -20,7 +20,7 @@ module.exports = {
     production : {
       user : 'pi',
       host : ['noise-pi'],
-      ref  : 'origin/master',
+      ref  : 'origin/development',
       repo : 'git@github.com:yurivm/mumble.git',
       path : '/home/pi/mumble',
       'post-deploy' : 'npm install && pm2 reload ecosystem.config.js --env production'
