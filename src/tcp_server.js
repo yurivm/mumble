@@ -8,9 +8,7 @@ const net = require('net');
 const boundary = /}\n{/g;
 const boundaryMarker = '}####{';
 const marker = '####';
-const splitJson = (stream) => {
-  return stream.replace(boundary, boundaryMarker).split(marker);
-};
+const splitJson = (stream) => stream.replace(boundary, boundaryMarker).split(marker);
 
 exports.createTCPServer = (port, clients) => {
   function handleConnection(conn) {
@@ -23,11 +21,7 @@ exports.createTCPServer = (port, clients) => {
       // Decode received string
       const stream = decoder.write(d);
       try {
-        splitJson(stream).forEach(function (str) {
-          clients.forEach(function (client) {
-            client.send(str);
-          });
-        });
+        splitJson(stream).forEach((str) => clients.forEach((client) => client.send(str)));
       } catch (err) {
         console.log('Error sending data: %s', err);
       }

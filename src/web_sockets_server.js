@@ -1,7 +1,7 @@
 const http = require('http');
 const WebSocket = require('ws');
 
-let clients = [];
+const clients = [];
 
 exports.webSocketClients = clients;
 
@@ -20,11 +20,10 @@ exports.startWebSocketServer = (port) => {
 
     ws.on('close', function() {
       console.log('%s disconnected', ws._socket.remoteAddress);
-      let id = clients.indexOf(ws);
+      const id = clients.indexOf(ws);
       delete clients[id];
-      });
+    });
   });
-  server.listen(port, function() {
-    console.log("HTTP Server is listening on port " + port);
-  });
-}
+
+  server.listen(port, () => console.log('HTTP Server is listening on port %s ', port));
+};
