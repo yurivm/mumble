@@ -5,18 +5,25 @@
   "name": "mumble",
   "version": "1.0.0",
   "description": "tcp server for the odaslive client",
-  "main": "index.js",
+  "main": "src/mumble.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "mocha",
     "dev": "nodemon src/mumble.js",
-    "start": "node src/mumble.js"
+    "start": "node src/mumble.js",
+    "lint": "./node_modules/.bin/eslint src/"
   },
   "author": "Yuri Veremeyenko",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yurivm/mumble.git"
+  },
   "license": "ISC",
   "devDependencies": {
+    "chai": "^4.2.0",
     "eslint": "^6.8.0",
     "eslint-config-airbnb-base": "^14.0.0",
     "eslint-plugin-import": "^2.20.1",
+    "mocha": "^7.1.1",
     "nodemon": "^2.0.2"
   },
   "dependencies": {

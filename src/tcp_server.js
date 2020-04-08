@@ -1,5 +1,3 @@
-// I have taken this code is from odasweb project, https://github.com/introlab/odas_web
-//
 const { StringDecoder } = require('string_decoder');
 const net = require('net');
 
@@ -8,14 +6,12 @@ const net = require('net');
  */
 
 const boundary = /}\n{/g;
-const boundaryMarker = "}####{";
-const marker = "####";
-const splitJson = (stream) => {
-  return stream.replace(boundary, boundaryMarker).split(marker);
-};
+const boundaryMarker = '}####{';
+const marker = '####';
+const splitJson = (stream) => stream.replace(boundary, boundaryMarker).split(marker);
 
-exports.startTCPServer = (port, clients) => {
-  function handlePotConnection(conn) {
+exports.createTCPServer = (port, clients) => {
+  function handleConnection(conn) {
     const remoteAddress = `${conn.remoteAddress}:${conn.remotePort}`;
     console.log('new client connection from %s', remoteAddress);
 
@@ -25,11 +21,7 @@ exports.startTCPServer = (port, clients) => {
       // Decode received string
       const stream = decoder.write(d);
       try {
-        splitJson(stream).forEach(function (str) {
-          clients.forEach(function(client) {
-            client.send(str);
-          });
-        });
+        splitJson(stream).forEach((str) => clients.forEach((client) => client.send(str)));
       } catch (err) {
         console.log('Error sending data: %s', err);
       }
@@ -49,9 +41,7 @@ exports.startTCPServer = (port, clients) => {
   }
 
   const server = net.createServer();
-  server.on('connection', handlePotConnection);
+  server.on('connection', handleConnection);
 
-  server.listen(port, () => {
-    console.log('server listening to %j', server.address());
-  });
-}
+  return server;
+};
