@@ -16,7 +16,6 @@ exports.startWebSocketServer = (port) => {
     ws.on('message', function incoming(message) {
       console.log('received: %s', message);
     });
-    ws.send('CONNECTED');
 
     ws.on('close', function() {
       console.log('%s disconnected', ws._socket.remoteAddress);
