@@ -13,15 +13,37 @@ The setup is basically this:
 - Mumble echoes the JSON data to the clients
 - Win & profit :)
 
-
-## Setup
+## Prerequisites
 
 - Raspberry PI
   - respeaker software
-  - odasweb
-  - ps2 startup (`systemctl enable pm2-pi`)
-  - pm2 start app.js --node-args="--max-old-space-size=256"
+  - [odaslive](https://github.com/introlab/odas)
+  - [pm2](https://pm2.keymetrics.io/docs/usage/quick-start/) startup (`systemctl enable pm2-pi`)
+
+## Running the odaslive binary
+
+Pm2 takes care of this, check `ecosystem.config.js` and update the app configuration if necessary:
+
+```
+ {
+      name: 'odaslive',
+      // you may want to adjust the path to your odas installation
+      script: '~/odas/bin/odaslive -c ~/odas/config/odaslive/respeaker_4_mic_array.cfg',
+      args: '',
+      instances: 1,
+      autorestart: true,
+      watch: true,
+      max_memory_restart: '512M',
+    }
+```
 
 ## Deployment
 
-- `pm2 deploy production update`
+The current `ecosystem.config.js` deploys this repo via SSH to a host named `noise-pi`. Feel free to update the configuration locally as necessary.
+
+To deploy, run `pm2 deploy production update`
+
+
+## Contributing
+
+PRs are welcome! :)
