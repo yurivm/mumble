@@ -1,6 +1,6 @@
 # Mumble
 
-Mumble is an app created for the noise dashboard project described in this medium article (insert link when done).
+Mumble is an app created for the noise dashboard project described in this [medium article](https://medium.com/homeday/building-a-noise-level-dashboard-for-your-office-with-a-raspberry-pi-71360ee1ff46?sk=652de93b0eaf5361133f5638970cfde7).
 
 ![](doc/mumble_diagram.png)
 
